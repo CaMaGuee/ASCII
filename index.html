@@ -160,8 +160,9 @@
                 }
 
                 function getCookie(name) {
-                    console.log("Cookie:" + name);
                     var parts = document.cookie.split(name + '=');
+                    console.log("Cookie:" + name);
+                    console.log("parts:" + parts);
                     if (parts.length === 2) { return parts[1].split(';')[0]; }
                 }
 
