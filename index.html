@@ -140,7 +140,7 @@
                 displayToken();
                 function displayToken() {
                     var token = getCookie('authorize-access-token');
-
+                    console.log(token);
                     if (token) {
                         Kakao.Auth.setAccessToken(token);
                         Kakao.Auth.getStatusInfo()
