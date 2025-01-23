@@ -9,12 +9,7 @@
     <link rel="icon" type="image/png" href="https://github.com/CaMaGuee/home/blob/main/imgs/logo_square.PNG?raw=true">
     <link rel="icon" type="image/x-icon"
         href="https://raw.githubusercontent.com/CaMaGuee/home/refs/heads/main/imgs/logo_square.ico">
-    <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js"
-        integrity="sha384-DKYJZ8NLiK8MN4/C5P2dtSmLQ4KwPaoqAfyA/DfmEc1VDxu4yyC7wy6K1Hs90nka"
-        crossorigin="anonymous"></script>
-    <script>
-        Kakao.init('c4d8750c422487dd94ad3e6108f5cb2f');
-    </script>
+
     <style>
         body,
         h1 {
@@ -123,14 +118,19 @@
                     </script>
             </h1>
             <hr style="margin:auto;width:40%; border-color: #9e9e9e !important;">
-
+            <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js"
+            integrity="sha384-DKYJZ8NLiK8MN4/C5P2dtSmLQ4KwPaoqAfyA/DfmEc1VDxu4yyC7wy6K1Hs90nka"
+            crossorigin="anonymous"></script>
+        <script>
+            Kakao.init('c4d8750c422487dd94ad3e6108f5cb2f');
+        </script>
             <p style="font-size:18px!important; text-align:center!important;">
                 <a id="kakao-login-btn" href="javascript:loginWithKakao()" style="color: white;">
                     Login
                 </a>
             </p>
             <p id="token-result"><script>document.getElementById('token-result').innerText
-                                        = 'login success, token: ' + Kakao.Auth.getAccessToken();</script></p>
+                = 'login success, token: ' + Kakao.Auth.getAccessToken();</script></p>
             <script>
                 function loginWithKakao() {
                     Kakao.Auth.authorize({
