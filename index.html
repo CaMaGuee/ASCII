@@ -133,23 +133,12 @@
             <p id="token-result"></p>
             <script>
                 function loginWithKakao() {
-                    Kakao.Auth.login({
-                        success: function(authObj){
-                            console.log(authObj);
-                            Kakao.Auth.setAccessToken(authObj);
-
-                            getInfo();
-                        },
-                        fail: function (err){
-                            Kakao.Auth.setAccessToken(null);
-                        }
-                    })
                     Kakao.Auth.authorize({
                         redirectUri: 'https://camaguee.github.io/home',
                     });
                 }
 
-                //displayToken();
+                displayToken();
                 function displayToken() {
                     var token = getCookie('authorize-access-token');
                     console.log(token);
