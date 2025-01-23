@@ -123,6 +123,7 @@
                 crossorigin="anonymous"></script>
             <script>
                 Kakao.init('c4d8750c422487dd94ad3e6108f5cb2f');
+                if(Kakao.isInitialized()){console.log("Oauth Initializing is OK");}
             </script>
             <p style="font-size:18px!important; text-align:center!important;">
                 <a id="kakao-login-btn" href="javascript:loginWithKakao()" style="color: white;">
@@ -132,12 +133,23 @@
             <p id="token-result"></p>
             <script>
                 function loginWithKakao() {
+                    Kakao.Auth.login({
+                        success: function(authObj){
+                            console.log(authObj);
+                            Kakao.Auth.setAccessToken(authObj);
+
+                            getInfo();
+                        },
+                        fail: function (err){
+                            Kakao.Auth.setAccessToken(null);
+                        }
+                    })
                     Kakao.Auth.authorize({
                         redirectUri: 'https://camaguee.github.io/home',
                     });
                 }
 
-                displayToken();
+                //displayToken();
                 function displayToken() {
                     var token = getCookie('authorize-access-token');
                     console.log(token);
