@@ -129,8 +129,7 @@
                     Login
                 </a>
             </p>
-            <p id="token-result"><script>document.getElementById('token-result').innerText
-                = 'login success, token: ' + Kakao.Auth.getAccessToken();</script></p>
+            <p id="token-result"></p>
             <script>
                 function loginWithKakao() {
                     Kakao.Auth.authorize({
