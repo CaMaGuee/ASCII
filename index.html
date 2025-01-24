@@ -118,8 +118,8 @@
                 </script>
             </h1>
             <hr style="margin:auto;width:40%; border-color: #9e9e9e !important;">
-            <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js"
-                integrity="sha384-DKYJZ8NLiK8MN4/C5P2dtSmLQ4KwPaoqAfyA/DfmEc1VDxu4yyC7wy6K1Hs90nka"
+            <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.3/kakao.min.js"
+                integrity="sha384-kLbo2SvoNtOFiniJ1EQ9o2iDA8i3xp+O6Cns+L5cd4RsOJfl+43z5pvieT2ayq3C"
                 crossorigin="anonymous"></script>
             <script>
                 Kakao.init('c4d8750c422487dd94ad3e6108f5cb2f');
@@ -140,17 +140,17 @@
                     });
                 }
 
+                displayToken()
                 function displayToken() {
                     var token = getCookie('authorize-access-token');
-                    console.log(token);
-                    if (true) {
+
+                    if (token) {
                         Kakao.Auth.setAccessToken(token);
                         Kakao.Auth.getStatusInfo()
                             .then(function (res) {
                                 if (res.status === 'connected') {
-                                    var accessToken = Kakao.Auth.getAccessToken();
-                                    document.getElementById('token-result').innerText = 'login success, token: ' + accessToken;
-                                    // setCookie('authorize-access-token', accessToken, 1);
+                                    document.getElementById('token-result').innerText
+                                        = 'login success, token: ' + Kakao.Auth.getAccessToken();
                                 }
                             })
                             .catch(function (err) {
@@ -161,19 +161,7 @@
 
                 function getCookie(name) {
                     var parts = document.cookie.split(name + '=');
-                    console.log("Cookie:" + name);
-                    console.log("parts:" + parts);
                     if (parts.length === 2) { return parts[1].split(';')[0]; }
-                }
-
-                function setCookie(name, value, days) {
-                    var expires = "";
-                    if (days) {
-                        var date = new Date();
-                        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-                        expires = "; expires=" + date.toUTCString();
-                    }
-                    document.cookie = name + "=" + (value || "") + expires + "; path=/";
                 }
             </script>
         </div>
