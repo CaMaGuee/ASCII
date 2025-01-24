@@ -168,7 +168,25 @@
                 }
             </script>
         </div>
-        <div calss="SecondScreen"></div>
+        <div calss="SecondScreen">
+            <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+            <script>
+                Kakao.init('c4d8750c422487dd94ad3e6108f5cb2f'); // 카카오 앱 키
+
+                function login() {
+                    Kakao.Auth.login({
+                        success: function (authObj) {
+                            console.log(authObj);
+                            // 여기서 authObj.access_token을 사용하여 API 호출 가능
+                        },
+                        fail: function (err) {
+                            console.error(err);
+                        }
+                    });
+                }
+            </script>
+            <button onclick="login()">카카오톡 로그인</button>
+        </div>
         <div class="BottomLeftBanner PaddingLarge">
             Powered by <a href="" target="_blank" style="color: wheat;">cs.kim</a>
         </div>
