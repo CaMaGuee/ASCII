@@ -141,40 +141,6 @@
 				}
 			</script>
 			<script>
-				displayToken();
-
-				function loginWithKakao() {
-					Kakao.Auth.authorize({
-						redirectUri: 'https://camaguee.github.io/home',
-					});
-				}
-
-				displayToken()
-				function displayToken() {
-					var token = getCookie('authorize-access-token');
-
-					if (token) {
-						console.log("token : " + token);
-						Kakao.Auth.setAccessToken(token);
-						Kakao.Auth.getStatusInfo()
-							.then(function (res) {
-								if (res.status === 'connected') {
-									document.getElementById('token-result').innerText
-										= 'login success, token: ' + Kakao.Auth.getAccessToken() + token;
-								}
-							})
-							.catch(function (err) {
-								Kakao.Auth.setAccessToken(null);
-							});
-					}
-				}
-
-				function getCookie(name) {
-					console.log("getCookie is called");
-					document.cookie = "name=value; domain=.camaguee.github.io; path=/";
-					var parts = document.cookie.split(name + '=');
-					if (parts.length === 2) { return parts[1].split(';')[0]; }
-				}
 			</script>
 		</div>
 		<div calss="SecondScreen">
