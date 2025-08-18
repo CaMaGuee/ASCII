@@ -5,239 +5,295 @@
 <title>휴가 계산기</title>
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
 <style>
-@font-face {
-  font-family: 'NeoDGM';
-  src: url('neodgm_code.woff') format('woff');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
+@font-face { font-family: 'NeoDGM'; src: url('neodgm_code.woff') format('woff'); font-weight:400; font-style:normal; font-display:swap; }
 
-html, body{
-  overflow: auto; /* 스크롤 가능 */
-}
+html, body { overflow: auto; }
+html::-webkit-scrollbar { width:0px; background:transparent; }
+html { scrollbar-width:none; -ms-overflow-style:none; }
 
-/* Chrome, Edge, Safari */
-html::-webkit-scrollbar {
-  width: 0px;
-  background: transparent;
-}
-
-/* Firefox */
-html {
-  scrollbar-width: none; /* 스크롤바 숨김 */
-  -ms-overflow-style: none; /* IE 10+ */
-}
-
-/* 전체 스타일: NeoDGM 우선 사용, 없으면 시스템 폰트 */
-body {
-  font-family: 'NeoDGM', "Noto Sans KR", sans-serif;
-  margin: 0 auto;
-  padding-left: 10%;
-  padding-right: 10%;
-  background: #e2e2e2;
-  color: #111;
-}
-
-/* 헤더 */
-h1 {
-  text-align:center;
-  margin-bottom:20px;
-  font-weight:600;
-  color:#002c5a;
-}
-
-/* 카드 패널 (애플 스타일) */
-.panel {
-  background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.88));
-  border-radius: 18px;
-  padding: 30px;
-  box-shadow: 0 10px 10px rgba(0,0,0,0.3);
-  backdrop-filter: blur(10px);
-  margin-bottom: 20px;
-}
-
-/* 레이아웃 */
+body { font-family:'NeoDGM', "Noto Sans KR", sans-serif; margin:0 auto; padding-left:10%; padding-right:10%; background:#f0f2f5; color:#111; }
+h1 { text-align:center; margin-bottom:20px; font-weight:600; color:#002c5a; }
+.panel { background:linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.88)); border-radius:18px; padding:24px; box-shadow:0 10px 30px rgba(0,0,0,0.3); backdrop-filter:blur(10px); margin-bottom:20px; }
 .flex { display:flex; gap:20px; flex-wrap:wrap; align-items:flex-start; }
 .left { flex:1; }
 .right { width:380px; }
 
-/* 리스트 카드 */
-.list {
-  max-height: 340px;
-  overflow-y: auto;
-  border-radius: 14px;
-  background: #fbfbfd;
-  padding: 10px;
-}
-.item {
-  display:flex; justify-content:space-between; align-items:center;
-  padding:10px 12px; margin-bottom:10px; border-radius:12px;
-  background: linear-gradient(180deg,#ffffff,#fbfcfe);
-  box-shadow: 0 4px 12px rgba(2,6,23,0.04);
-  transition: transform .12s ease, box-shadow .12s ease;
-}
-.item:hover { transform: translateY(-4px); box-shadow: 0 8px 22px rgba(2,6,23,0.08); }
+.list { max-height:340px; overflow-y:auto; border-radius:14px; background:#fbfbfd; padding:10px; }
+.item { display:flex; justify-content:space-between; align-items:center; padding:10px 12px; margin-bottom:10px; border-radius:12px; background:linear-gradient(180deg,#ffffff,#fbfcfe); box-shadow:0 4px 12px rgba(2,6,23,0.04); transition: transform .12s ease, box-shadow .12s ease; }
+.item:hover { transform:translateY(-4px); box-shadow:0 8px 22px rgba(2,6,23,0.08); }
 .item:last-child { margin-bottom:0; }
 
-/* 입력, 버튼 */
-input[type="date"], input[type="number"] {
-  padding:8px 10px; border-radius:5px; border:1px solid #00000031; margin-left:8px;
-}
-button {
-  padding:8px 14px; border-radius:5px; border:none; cursor:pointer; font-weight:600;
-}
+input[type="date"], input[type="number"] { padding:8px 10px; border-radius:5px; border:1px solid #00000031; margin-left:8px; }
+button { padding:8px 14px; border-radius:5px; border:none; cursor:pointer; font-weight:600; }
 button.primary { background:#268bffaf; color:#fff;}
 button.primary:hover { background:#0f437e9f; color:#fff;}
 button.small { background:#f1f3f6; color:#202124; }
 
-/* 캘린더 박스 */
-#calendar {
-  margin-top:14px; border-radius:14px; overflow:hidden;
-  box-shadow: 0 12px 30px rgba(2,6,23,0.06);
-}
+#calendar { margin-top:14px; border-radius:14px; overflow:hidden; box-shadow:0 12px 30px rgba(2,6,23,0.06); }
 
-/* 상태 */
 .status { margin-top:12px; font-weight:700; color:#0b1220; }
 .status span { color:#007aff; }
 
-/* FullCalendar 폰트 사이즈/패딩 조정 (좀 더 애플 느낌) */
-.fc .fc-daygrid-day-number { font-size:13px; font-weight:600; padding:6px; color:rgb(87, 0, 0); }
+.fc .fc-daygrid-day-number { font-size:13px; font-weight:600; padding:6px; color:rgb(87,0,0); }
 .fc .fc-daygrid-event { font-size:12px; border-radius:8px; padding:4px 6px; }
+
+/* 모달 */
+#holidayModal, #holidayModal_Annual { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); justify-content:center; align-items:center; }
+#holidayModal > div, #holidayModal_Annual > div { background:#fff; padding:24px; border-radius:14px; min-width:260px; text-align:center; }
 </style>
 </head>
 <body>
-  <h1>휴가 계산기</h1>
+<h1>휴가 계산기</h1>
 
-  <div class="panel flex">
-    <div class="left">
-      <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px;">
-        <div><label style="padding:8px;">연차 발생일:</label><input id="annDate" type="date"></div>
-        <div><label style="padding:8px;">일수:</label><input id="annDays" type="number" min="0.5" step="0.5" value="1" style="width:84px"></div>
-        <button id="addAnn" class="primary">추가</button>
-      </div>
-      <div id="calendar"></div>
+<div class="panel flex">
+  <div class="left">
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px;">
+      <div><label style="padding:8px;">연차 발생일:</label><input id="annDate" type="date"></div>
+      <div><label style="padding:8px;">일수:</label><input id="annDays" type="number" min="0.25" step="0.25" value="1" style="width:84px"></div>
+      <button id="addAnn" class="primary">추가</button>
     </div>
-
-    <div class="right">
-      <div style="font-weight:700;margin-bottom:8px;">발생 연차 리스트</div>
-      <div id="annList" class="list"></div>
-      <div class="status">남은 연차: <span id="remainingAnn">0</span> 일</div>
-      <div class="status">남은 대체휴가: <span id="remainingSub">0</span> 일</div>
-      <div style="margin-top:16px; display:flex; gap:8px; flex-wrap:wrap;">
-          <button id="exportData" class="small">내보내기</button>
-          <input type="file" id="importFile" style="display:none;">
-          <button id="importData" class="small">불러오기</button>
-        </div>
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px;">
+      <div><label style="padding:8px;">대체휴가 수동 입력</label><input id="SubDateADD" type="date"></div>
+      <button id="addSub" class="primary">추가</button>
     </div>
+    <div id="calendar"></div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
-  <script>
-    let annIdCounter=1;
-    const annualOccurrences=[];
-    let remainingAnn=0, remainingSub=0;
+  <div class="right">
+    <div style="font-weight:700;margin-bottom:8px;">발생 연차 리스트</div>
+    <div id="annList" class="list"></div>
+    <div class="status">남은 연차: <span id="remainingAnn">0</span> 일</div>
+    <div class="status">남은 대체휴가: <span id="remainingSub">0</span> 일</div>
 
-    // 내보내기
-    document.getElementById('exportData').onclick = () => {
-      const dataStr = JSON.stringify(annualOccurrences, null, 2);
-      const blob = new Blob([dataStr], {type: "application/json"});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'annual_occurrences.json';
-      a.click();
-      URL.revokeObjectURL(url);
-    };
+    <div style="margin-top:16px; font-weight:700;">추가 대체휴가 리스트</div>
+    <div id="addedSubList" class="list"></div>
 
-    // 불러오기 버튼 클릭 -> 파일 선택
-    document.getElementById('importData').onclick = () => {
-      document.getElementById('importFile').click();
-    };
+    <div style="margin-top:16px; font-weight:700;">사용 휴가 리스트</div>
+    <div id="usedList" class="list"></div>
+    <div style="margin-top:16px; font-weight:700;">사용 대체휴가 리스트</div>
+    <div id="usedSubList" class="list"></div>
+  </div>
+</div>
+<div style="margin-top:16px; display:flex; gap:8px; flex-wrap:wrap;">
+    <button id="exportData" class="small">내보내기</button>
+    <input type="file" id="importFile" style="display:none;">
+    <button id="importData" class="small">불러오기</button>
+</div>
 
-    // 파일 선택 후 처리
-    document.getElementById('importFile').addEventListener('change', e => {
-      const file = e.target.files[0];
-      if(!file) return;
+<!-- 평일 선택 모달 -->
+<div id="holidayModal">
+  <div>
+    <div style="margin-bottom:12px; font-weight:600;">휴가를 추가하시겠습니까?</div>
+    <div style="display:flex; gap:8px; justify-content:center;">
+      <button id="modalAnnual" class="primary">연차</button>
+      <button id="modalSub" class="primary">대체휴가</button>
+      <button id="modalCancel" class="small">취소</button>
+    </div>
+  </div>
+</div>
 
-      const reader = new FileReader();
-      reader.onload = event => {
-        try {
-          const imported = JSON.parse(event.target.result);
-          if(Array.isArray(imported)){
-            annualOccurrences.length = 0; // 기존 데이터 초기화
-            remainingAnn = 0; remainingSub = 0;
-            imported.forEach(item=>{
-              // id 값 보존, 필요시 annIdCounter 갱신
-              annualOccurrences.push({...item});
-              remainingAnn += item.remaining;
-              if(item.id >= annIdCounter) annIdCounter = item.id + 1;
-            });
-            refreshLists();
-            alert('데이터 불러오기 완료');
-          } else {
-            alert('잘못된 파일입니다.');
-          }
-        } catch(err){
-          alert('파일 읽기 오류: '+err);
-        }
-      };
-      reader.readAsText(file);
-      e.target.value = ''; // 동일 파일 재선택 가능
-    });
+<!-- 연차 하위 모달 (반차/반반차 선택) -->
+<div id="holidayModal_Annual">
+  <div>
+    <div style="margin-bottom:12px; font-weight:600;">연차 선택</div>
+    <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
+      <button id="modalFull" class="primary">휴가(1일)</button>
+      <button id="modalHalf" class="primary">휴가(0.5일)</button>
+      <button id="modalQuarter" class="primary">휴가(0.25일)</button>
+      <button id="modalAnnualCancel" class="small">취소</button>
+    </div>
+  </div>
+</div>
 
-    function refreshLists(){
-      const annList=document.getElementById('annList');
-      annList.innerHTML='';
-      annualOccurrences.slice().sort((a,b)=>a.date.localeCompare(b.date)).forEach(item=>{
-        const div=document.createElement('div'); div.className='item';
-        div.innerHTML = `<div>${item.date} · 남은:${item.remaining}일</div>
-                         <div><button class="small" onclick="deleteAnn(${item.id})">삭제</button></div>`;
-        annList.appendChild(div);
-      });
-      document.getElementById('remainingAnn').innerText = remainingAnn.toFixed(1);
-      document.getElementById('remainingSub').innerText = remainingSub.toFixed(1);
-    }
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+<script>
+let annIdCounter = 1;
+const annualOccurrences = [];
+let remainingAnn = 0;
+const weekendSubHolidays = [];
+const usedHolidays = [];
+const usedSubHolidays = [];
 
-    function deleteAnn(id){
-      const idx = annualOccurrences.findIndex(a=>a.id===id);
-      if(idx>=0){
-        remainingAnn -= annualOccurrences[idx].remaining;
-        annualOccurrences.splice(idx,1);
-        refreshLists();
-      }
-    }
+let currentDate = '';
+let currentWeekday = '';
 
-    document.getElementById('addAnn').onclick = () => {
-      const date = document.getElementById('annDate').value;
-      const days = Number(document.getElementById('annDays').value)||0;
-      if(!date){ alert('날짜 입력'); return; }
-      if(days<=0){ alert('0.5 이상'); return; }
-      annualOccurrences.push({id: annIdCounter++, date, remaining: days});
-      remainingAnn += days;
+function refreshLists(){
+  const annList=document.getElementById('annList');
+  const addedSubList=document.getElementById('addedSubList');
+  annList.innerHTML='';
+  annualOccurrences.slice().sort((a,b)=>a.date.localeCompare(b.date)).forEach(item=>{
+    const div=document.createElement('div'); div.className='item';
+    div.innerHTML = `<div>${item.date} · 남은:${item.remaining}일</div>
+                     <div><button class="small" onclick="deleteAnn(${item.id})">삭제</button></div>`;
+    annList.appendChild(div);
+  });
+
+  addedSubList.innerHTML='';
+  weekendSubHolidays.forEach((item, idx)=>{
+    const div=document.createElement('div'); div.className='item';
+    div.innerHTML = `<div>${item.date} (${item.weekday})</div>
+                     <div><button class="small" onclick="deleteAddedSub(${idx})">삭제</button></div>`;
+    addedSubList.appendChild(div);
+  });
+
+  const remainingSub = weekendSubHolidays.length - usedSubHolidays.length;
+  document.getElementById('remainingAnn').innerText = remainingAnn.toFixed(2);
+  document.getElementById('remainingSub').innerText = remainingSub;
+}
+
+function refreshUsedLists(){
+  const usedList = document.getElementById('usedList');
+  const usedSubList = document.getElementById('usedSubList');
+  usedList.innerHTML='';
+  usedSubList.innerHTML='';
+  usedHolidays.forEach((item, idx)=>{
+    const div=document.createElement('div'); div.className='item';
+    div.innerHTML=`<div>${item.date} (${item.weekday}) - ${item.amount}일</div>
+                   <div><button class="small" onclick="deleteUsedHoliday(${idx})">삭제</button></div>`;
+    usedList.appendChild(div);
+  });
+  usedSubHolidays.forEach((item, idx)=>{
+    const div=document.createElement('div'); div.className='item';
+    div.innerHTML=`<div>${item.date} (${item.weekday})</div>
+                   <div><button class="small" onclick="deleteUsedSub(${idx})">삭제</button></div>`;
+    usedSubList.appendChild(div);
+  });
+}
+
+function deleteAnn(id){ const idx = annualOccurrences.findIndex(a=>a.id===id); if(idx>=0){ remainingAnn -= annualOccurrences[idx].remaining; annualOccurrences.splice(idx,1); refreshLists(); }}
+function deleteAddedSub(idx){ weekendSubHolidays.splice(idx,1); refreshLists(); }
+function deleteUsedHoliday(idx){ remainingAnn += usedHolidays[idx].amount; usedHolidays.splice(idx,1); refreshUsedLists(); refreshLists(); }
+function deleteUsedSub(idx){ usedSubHolidays.splice(idx,1); refreshUsedLists(); refreshLists(); }
+
+document.getElementById('addAnn').onclick = () => {
+  const date = document.getElementById('annDate').value;
+  const days = Number(document.getElementById('annDays').value)||0;
+  if(!date){ alert('날짜 입력'); return; }
+  if(days<=0){ alert('0.25 이상'); return; }
+  annualOccurrences.push({id: annIdCounter++, date, remaining: days});
+  remainingAnn += days;
+  refreshLists();
+};
+
+document.getElementById('addSub').onclick = () => {
+  const dateStr = document.getElementById('SubDateADD').value;
+  if(!dateStr){ alert('날짜를 선택하세요.'); return; }
+
+  const dateObj = new Date(dateStr);                // 문자열을 Date로 변환
+  const weekday = dateObj.toLocaleDateString('ko-KR',{weekday:'short'});
+  const dayNum  = dateObj.getDay();                // 필요시 사용 (0:일요일,6:토요일)
+
+  weekendSubHolidays.push({ date: dateStr, weekday });
+  refreshLists();
+}
+
+/* ========== 내보내기 기능 (모든 데이터 저장) ========== */
+document.getElementById('exportData').onclick = () => {
+  const dataToSave = {
+    annualOccurrences,
+    weekendSubHolidays,
+    usedHolidays,
+    usedSubHolidays,
+    annIdCounter,
+    remainingAnn
+  };
+  const dataStr = JSON.stringify(dataToSave, null, 2);
+  const blob = new Blob([dataStr], {type: "application/json"});
+  const url = URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download='vacation_data.json';
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
+/* ========== 불러오기 기능 (모든 데이터 복원) ========== */
+document.getElementById('importData').onclick = () =>
+  document.getElementById('importFile').click();
+
+document.getElementById('importFile').addEventListener('change', e=>{
+  const file=e.target.files[0];
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload = event=>{
+    try{
+      const imported=JSON.parse(event.target.result);
+
+      // 배열들 복원
+      annualOccurrences.length = 0;
+      imported.annualOccurrences?.forEach(v=>annualOccurrences.push(v));
+      weekendSubHolidays.length = 0;
+      imported.weekendSubHolidays?.forEach(v=>weekendSubHolidays.push(v));
+      usedHolidays.length = 0;
+      imported.usedHolidays?.forEach(v=>usedHolidays.push(v));
+      usedSubHolidays.length = 0;
+      imported.usedSubHolidays?.forEach(v=>usedSubHolidays.push(v));
+
+      // 카운터, 잔여연차 복원
+      annIdCounter = imported.annIdCounter ?? 1;
+      remainingAnn = imported.remainingAnn ?? 0;
+
+      // 새로 계산해서 표시
+      refreshUsedLists();
       refreshLists();
-    };
+      alert("불러오기 완료!");
 
-    document.addEventListener('DOMContentLoaded', ()=>{
-      const calendarEl = document.getElementById('calendar');
-      const calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
-        height: 'auto',
-        dateClick: info => {
-          const d = info.dateStr;
-          if(confirm(`${d} 날짜 사용: 연차 -1, 대체휴가 -1?`)){
-            remainingAnn -= 1;
-            remainingSub -= 1;
-            refreshLists();
-          }
-        },
-        // (선택) 이벤트 스타일 조정 가능
-        dayMaxEvents: true
-      });
-      calendar.render();
-    });
+    }catch(err){
+      alert('파일 읽기 오류: '+err);
+    }
+  };
+  reader.readAsText(file);
+  e.target.value='';
+});
 
-    
-  </script>
+document.addEventListener('DOMContentLoaded', ()=>{
+  const calendarEl=document.getElementById('calendar');
+  const calendar=new FullCalendar.Calendar(calendarEl,{
+    initialView:'dayGridMonth', height:'auto',
+    dateClick: info=>{
+      currentDate = info.dateStr;
+      currentWeekday = info.date.toLocaleDateString('ko-KR',{weekday:'short'});
+      const dayNum = info.date.getDay();
+      if(dayNum===0 || dayNum===6){ // 주말
+        weekendSubHolidays.push({date:currentDate, weekday:currentWeekday});
+        refreshLists();
+      } else {
+        document.getElementById('holidayModal').style.display='flex';
+      }
+    },
+    dayMaxEvents:true
+  });
+  calendar.render();
+});
+
+// 모달 이벤트
+document.getElementById('modalAnnual').onclick = () => {
+    document.getElementById('holidayModal').style.display = 'none';
+    const annualModal = document.getElementById('holidayModal_Annual');
+    annualModal.style.display = 'flex';
+
+    const addHoliday = (amount) => {
+      remainingAnn -= amount;
+      usedHolidays.push({date: currentDate, weekday: currentWeekday, amount});
+      refreshUsedLists();
+      refreshLists();
+      annualModal.style.display = 'none';
+    }
+
+    document.getElementById('modalFull').onclick = () => addHoliday(1);
+    document.getElementById('modalHalf').onclick = () => addHoliday(0.5);
+    document.getElementById('modalQuarter').onclick = () => addHoliday(0.25);
+    document.getElementById('modalAnnualCancel').onclick = () => annualModal.style.display = 'none';
+}
+
+document.getElementById('modalSub').onclick = ()=>{
+    usedSubHolidays.push({date: currentDate, weekday: currentWeekday});
+    refreshUsedLists();
+    refreshLists();
+    document.getElementById('holidayModal').style.display='none';
+};
+
+document.getElementById('modalCancel').onclick = ()=>document.getElementById('holidayModal').style.display='none';
+</script>
 </body>
 </html>
