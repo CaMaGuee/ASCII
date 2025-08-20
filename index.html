@@ -57,6 +57,7 @@ button.small { background:#f1f3f6; color:#202124; }
 
   input[type="date"],input[type="number"] {padding: 2px 0px 4px 10px; border-radius:5px; border:1px solid #00000031; margin-top:10px;}
   #SubDateADD {margin-top:15px;}
+  input[type="date"]:empty::before {content: attr(data-placeholder); color: #aaa;}
 
   .list { max-height:200px; overflow-y:auto; border-radius:14px; background:#fbfbfd; padding:10px; }
   .item { display:flex; justify-content:space-between; align-items:center; padding:10px 12px; margin-bottom:10px; border-radius:12px; background:linear-gradient(180deg,#ffffff,#fbfcfe); box-shadow:0 4px 12px rgba(2,6,23,0.04); transition: transform .12s ease, box-shadow .12s ease; }
