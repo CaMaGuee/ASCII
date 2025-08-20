@@ -330,6 +330,12 @@ document.getElementById('modalSub').onclick = ()=>{
 };
 
 document.getElementById('modalCancel').onclick = ()=>document.getElementById('holidayModal').style.display='none';
+
+  // === 오늘 날짜를 모든 date input에 기본값으로 세팅 ===
+document.querySelectorAll('input[type="date"]').forEach(el => {
+  el.value = new Date().toISOString().split('T')[0];
+});
+
 </script>
 </body>
 </html>
