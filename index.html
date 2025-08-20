@@ -11,7 +11,6 @@ html, body { overflow: auto; }
 html::-webkit-scrollbar { width:0px; background:transparent; }
 html { scrollbar-width:none; -ms-overflow-style:none; }
 
-input[type="date"], input[type="number"] { padding:8px 10px; border-radius:5px; border:1px solid #00000031; margin-left:8px; }
 button { padding:8px 14px; border-radius:5px; border:none; cursor:pointer; font-weight:600; }
 button.primary { background:#268bffaf; color:#fff;}
 button.primary:hover { background:#0f437e9f; color:#fff;}
@@ -44,6 +43,8 @@ button.small { background:#f1f3f6; color:#202124; }
   .status { margin-top:12px; font-weight:700; color:#0b1220; }
   .status span { color:#007aff; }
 
+  input[type="date"], input[type="number"] { padding:8px 10px; border-radius:5px; border:1px solid #00000031; margin-left:8px; }
+  
   #ManualBtn {right:3%; top:3%; position: absolute;}
 }
 @media (max-width:767px){     /*--Mobile--*/
@@ -52,9 +53,12 @@ button.small { background:#f1f3f6; color:#202124; }
   .status { margin-top:15px; font-weight:700; color:#0b1220; }
   .status span { color:#007aff; }
   .right {margin-bottom: 100px;}
+
+  input[type="date"],input[type="number"] {padding: 2px 0px 4px 0px; border-radius:5px; border:1px solid #00000031;}
+
   #calendar {font-size: 13px;}
-  #ManualBtn {right:3%; top:75px; position: absolute;}
-  #SaveFileBtn {right:3%; top:110px; position: absolute;}
+  #ManualBtn {right:3%; top:25px; position: fixed; z-index: 9999;}
+  #SaveFileBtn {left:3%; top:140px; position: absolute;}
 }
 
 </style>
@@ -78,6 +82,12 @@ button.small { background:#f1f3f6; color:#202124; }
       <button id="addSub" class="primary">추가</button>
     </div>
     <br/>
+    <div id="SaveFileBtn" style="margin-top:16px; display:flex; gap:8px; flex-wrap:wrap;">
+      <button id="exportData" class="small">내보내기</button>
+      <input type="file" id="importFile" style="display:none;">
+      <button id="importData" class="small">불러오기</button>
+    </div>
+    <br/>
     <div id="calendar" style="padding-bottom: 15px;"></div>
     <br/>
   </div>
@@ -96,11 +106,6 @@ button.small { background:#f1f3f6; color:#202124; }
     <div style="margin-top:16px; font-weight:700;">사용 대체휴가 리스트</div>
     <div id="usedSubList" class="list"></div>
   </div>
-</div>
-<div id="SaveFileBtn" style="margin-top:16px; display:flex; gap:8px; flex-wrap:wrap;">
-    <button id="exportData" class="small">내보내기</button>
-    <input type="file" id="importFile" style="display:none;">
-    <button id="importData" class="small">불러오기</button>
 </div>
 
 <!-- 평일 선택 모달 -->
