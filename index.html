@@ -16,16 +16,37 @@ body {
   color:#111;
 }
 
+.SubTitleText {
+  margin:0 0 15px 0;
+  display:flex; flex-direction:row; gap:5px;
+  justify-content:left;
+  align-items:center;
+}
+.SubTitleLogo {
+  width:20px; height:20px;
+  transform:translateY(1px);
+  background:linear-gradient(180deg,#00aeff94,#0084ffec);
+  box-shadow:0 2px 6px rgba(0, 47, 255, 0.4);
+  border-radius: 7px;
+}
+
 /* ===== 버튼 ===== */
 button { padding:8px 14px; border-radius:5px; border:none; cursor:pointer; font-weight:600; }
 button.primary { font-size:13px; margin-top:10px; background:linear-gradient(180deg,#0055ffa1,#0055ff); box-shadow:0 4px 12px rgba(0, 47, 255, 0.4); color:#fff; }
 button.primary:hover { background:linear-gradient(180deg,#0055ff80,#0055ffcb); box-shadow:0 4px 12px rgba(2,6,23,0.04); color:#fff; }
 button.small { background:#f1f3f6; color:#202124; }
 
+.DataBtn { padding:8px 20px; font-weight: 500; font-size: 11px; box-shadow:0 4px 12px rgba(2,6,23,0.04); transition: transform .12s ease, box-shadow .12s ease;}
+.DataBtn:hover { transform:translateY(-4px); box-shadow:0 8px 22px rgba(2,6,23,0.08); background:#c4c4c49f; }
+
+.AnnualTypeBtn {width:100%; display:flex; flex-direction:row; gap:5px; justify-content: center }
+#AnnualListBtn, #SubListBtn, #UsedListBtn {padding:8px 14px; font-weight: 500; font-size: 11px; box-shadow:0 4px 12px rgba(2,6,23,0.04); transition: transform .12s ease, box-shadow .12s ease;}
+#AnnualListBtn.active, #SubListBtn.active, #UsedListBtn.active { transform:translateY(-4px); box-shadow:0 8px 22px rgba(2,6,23,0.08); background:#c4c4c49f; }
+
 /* ===== 캘린더 ===== */
-#calendar { margin-top:14px; border-radius:14px; overflow:hidden; }
-h2.fc-toolbar-title { font-size: 17px !important; }
-.fc-toolbar-chunk .fc-button { font-size: 13px !important; }
+#calendar { border-radius:14px; overflow:hidden; }
+h2.fc-toolbar-title { font-size: 14px !important; }
+.fc-toolbar-chunk .fc-button { font-size: 10px !important; }
 .fc .fc-daygrid-day-number { font-size:13px; font-weight:600; padding:6px; color:rgb(87,0,0); }
 .fc .fc-daygrid-event { font-size:12px; border-radius:8px; padding:4px 6px; }
 .fc .fc-daygrid-day-frame { aspect-ratio: 1 / 1.2; height: auto !important; }
@@ -85,6 +106,18 @@ h1 { font-size:18px; text-align:left; }
   box-shadow:0 8px 22px rgba(2,6,23,0.08);
 }
 
+#AnnualListView, #SubListView, #UsedListView {
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: opacity 0.5s ease, max-height 0.5s ease;
+}
+
+#AnnualListView.active, #SubListView.active, #UsedListView.active {
+  opacity: 1;
+  max-height: 1000px; /* 충분히 큰 값으로 설정 */
+}
+
 /* ===== 입력 ===== */
 #left-top-input-field {
   align-items: flex-start;    /* 윗 정렬 */
@@ -107,8 +140,6 @@ input[type="date"], input[type="number"] {
   padding:8px 10px; border-radius:5px;
   border:1px solid #00000031;
 }
-.DataBtn { padding:8px 20px; font-weight: 500; font-size: 11px; box-shadow:0 4px 12px rgba(2,6,23,0.04); transition: transform .12s ease, box-shadow .12s ease;}
-.DataBtn:hover { transform:translateY(-4px); box-shadow:0 8px 22px rgba(2,6,23,0.08); background:#c4c4c49f; }
 
 /* ===== 리스트 ===== */
 .list {
@@ -127,11 +158,11 @@ input[type="date"], input[type="number"] {
 .item:last-child { margin-bottom:0; }
 
 /* ===== 상태 ===== */
-.status { margin-top:12px; font-weight:700; color:#0b1220; }
+.status { margin-top:10px; font-weight:700; color:#0b1220; }
 .status span { color:#007aff; }
 
 /* ===== 기타 ===== */
-#ManualBtn { right:3%; top:2%; position:fixed; z-index:9999; color:#0000008f; transition: transform .12s ease }
+#ManualBtn { right:5%; top:2%; position:fixed; z-index:9999; color:#0000008f; transition: transform .12s ease }
 #ManualBtn:hover { transform:translateY(-2px); }
 a {
   color: inherit;           /* 부모 글자색 따라가기 */
@@ -165,6 +196,7 @@ a {
   <!-- 왼쪽 -->
   <div class="left">
     <div class="left-item">
+      <h4 class="SubTitleText"><div class="SubTitleLogo" ></div>휴가 추가</h2>
       <div id="left-top-input-field">
         <div id="AnnualInput">
           <label style="padding-left:3px;">연차 발생일</label>
@@ -190,6 +222,7 @@ a {
     </div>
     <br/>
     <div class="left-item">
+      <h4 class="SubTitleText"><div class="SubTitleLogo" ></div>캘린더</h2>
       <div id="calendar" style="padding-bottom:15px;"></div>
     </div>
     <br/>
@@ -198,22 +231,36 @@ a {
   <!-- 오른쪽 -->
   <div class="right">
     <div class="right-item">
-      <div class="status">남은 연차: <span id="remainingAnn">0</span> 일</div>
-      <div class="status">남은 대체휴가: <span id="remainingSub">0</span> 일</div>
+      <h4 class="SubTitleText"><div class="SubTitleLogo" ></div>남은 기간</h2>
+      <div style="width: 100%">
+        <div class="status">남은 연차: <span id="remainingAnn">0</span> 일</div>
+        <div class="status">남은 대체휴가: <span id="remainingSub">0</span> 일</div>
+      </div>
     </div>
     <br/>
     <div class="right-item">
-      <div style="font-weight:700;margin-bottom:10px;">발생 연차 리스트</div>
-      <div id="annList" class="list"></div>
+      <h4 class="SubTitleText"><div class="SubTitleLogo" ></div>사용 기간</h2>
+      <div class="AnnualTypeBtn">
+        <button id="AnnualListBtn">발생 연차</button>
+        <button id="SubListBtn">발생 대휴</button>
+        <button id="UsedListBtn">사용 휴가</button>
+      </div>
+      <br/>
+      <div id="AnnualListView" style="width: 100%">
+        <div class="status">발생 연차 리스트</div>
+        <div id="annList" class="list"></div>
+      </div>
+      <div id="SubListView" style="width: 100%">
+        <div class="status">추가 대체휴가 리스트</div>
+        <div id="addedSubList" class="list"></div>
+      </div>
+      <div id="UsedListView" style="width: 100%">
+        <div class="status">사용 휴가 리스트</div>
+        <div id="usedList" class="list"></div>
 
-      <div style="margin-top:16px; font-weight:700;">추가 대체휴가 리스트</div>
-      <div id="addedSubList" class="list"></div>
-
-      <div style="margin-top:16px; font-weight:700;">사용 휴가 리스트</div>
-      <div id="usedList" class="list"></div>
-
-      <div style="margin-top:16px; font-weight:700;">사용 대체휴가 리스트</div>
-      <div id="usedSubList" class="list"></div>
+        <div class="status">사용 대체휴가 리스트</div>
+        <div id="usedSubList" class="list"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -221,7 +268,9 @@ a {
 <!-- 모달: 평일 선택 -->
 <div id="holidayModal">
   <div>
-    <div style="margin-bottom:12px; font-weight:600;">휴가를 추가하시겠습니까?</div>
+    <h4 class="SubTitleText"><div class="SubTitleLogo" ></div>휴가 사용</h2>
+    <br/>
+    <div style="margin-bottom:12px; font-weight:400;">휴가를 추가하시겠습니까?</div>
     <div style="display:flex; gap:8px; justify-content:center;">
       <button id="modalAnnual" class="primary">연차</button>
       <button id="modalSub" class="primary">대체휴가</button>
@@ -233,7 +282,8 @@ a {
 <!-- 모달: 연차 상세 선택 -->
 <div id="holidayModal_Annual">
   <div>
-    <div style="margin-bottom:12px; font-weight:600;">연차 선택</div>
+    <h4 class="SubTitleText"><div class="SubTitleLogo" ></div>연차 선택</h2>
+    <br/>
     <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
       <button id="modalFull" class="primary">휴가(1일)</button>
       <button id="modalHalf" class="primary">휴가(0.5일)</button>
@@ -383,6 +433,32 @@ document.getElementById('importFile').addEventListener('change', e=>{
   reader.readAsText(file);
   e.target.value='';
 });
+
+window.onload = function() {
+  const buttons = document.querySelectorAll('.AnnualTypeBtn button');
+  const lists = [
+    document.getElementById('AnnualListView'),
+    document.getElementById('SubListView'),
+    document.getElementById('UsedListView')
+  ];
+
+  lists.forEach(list => list.classList.remove('active'));
+  document.getElementById('AnnualListView').classList.add('active');
+  document.getElementById('AnnualListBtn').classList.add('active');
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', function() {
+      lists.forEach(list => list.classList.remove('active'));
+
+      const targetId = this.id.replace('Btn', 'View');
+      const targetDiv = document.getElementById(targetId);
+      if(targetDiv) targetDiv.classList.add('active');
+
+      buttons.forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+};
 
 document.addEventListener('DOMContentLoaded', ()=>{
   const calendarEl=document.getElementById('calendar');
