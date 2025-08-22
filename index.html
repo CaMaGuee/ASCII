@@ -105,6 +105,38 @@ h1 { font-size:18px; text-align:left; }
   box-shadow:0 8px 22px rgba(2,6,23,0.08);
 }
 
+.donut {
+  position: relative;
+  width: 140px; height: 140px;
+  margin: 0 auto;
+}
+.donut-ring { transform: rotate(-90deg); }
+.donut-bg {
+  fill: none;
+  stroke: #eee;
+  stroke-width: 12;
+}
+.donut-fg {
+  fill: none;
+  stroke-width: 12;
+  stroke-linecap: round;
+  stroke: #007aff;
+  stroke-dasharray: 339.292;  /* 2πr = 2*π*54 */
+  stroke-dashoffset: 339.292; /* 처음에 다 숨김 */
+  transition: stroke-dashoffset 0.6s ease;
+}
+.donut-label {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  font-size: 20px;
+}
+
 #AnnualListView, #SubListView, #UsedListView {
   opacity: 0;
   max-height: 0;
@@ -234,9 +266,20 @@ a {
   <!-- 오른쪽 -->
   <div class="right">
     <div class="right-item">
-      <h4 class="SubTitleText"><div class="SubTitleLogo" ></div>남은 기간</h2>
-      <div style="width: 100%">
-        <div class="status">남은 연차: <span id="remainingAnn">0</span> 일</div>
+      <h4 class="SubTitleText"><div class="SubTitleLogo"></div>남은 연차 게이지</h4>
+      <div class="donut">
+        <svg class="donut-ring" width="140" height="140" viewBox="0 0 120 120">
+          <circle class="donut-bg" cx="60" cy="60" r="54"></circle>
+          <circle class="donut-fg" cx="60" cy="60" r="54"></circle>
+        </svg>
+        <div class="donut-label">
+          <span id="donutText">0%</span>
+          <div style="font-size:12px; color:#555;">
+            남은 <span id="donutRemain">0</span> / <span id="donutTotal">0</span>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:20px; width: 100%; display:flex; justify-content:center;">
         <div class="status">남은 대체휴가: <span id="remainingSub">0</span> 일</div>
       </div>
     </div>
@@ -300,7 +343,6 @@ a {
 <script>
 let annIdCounter = 1;
 const annualOccurrences = [];
-let remainingAnn = 0;
 const weekendSubHolidays = [];
 const usedHolidays = [];
 const usedSubHolidays = [];
@@ -328,8 +370,25 @@ function refreshLists(){
   });
 
   const remainingSub = weekendSubHolidays.length - usedSubHolidays.length;
-  document.getElementById('remainingAnn').innerText = remainingAnn.toFixed(2);
   document.getElementById('remainingSub').innerText = remainingSub;
+  
+  updateDonutGauge();
+}
+
+function updateDonutGauge(){
+  const total = annualOccurrences.reduce((sum, a) => sum + a.remaining, 0); // 총 발생 연차
+  const remain = remainingAnn; // 남은 연차
+  const percent = total > 0 ? (remain / total) * 100 : 0;
+
+  // 도넛 애니메이션 (둘레: 2πr = 339.292)
+  const circumference = 339.292;
+  const offset = circumference - (percent / 100) * circumference;
+  document.querySelector('.donut-fg').style.strokeDashoffset = offset;
+
+  // 텍스트 갱신
+  document.getElementById('donutText').innerText = `${percent.toFixed(0)}%`;
+  document.getElementById('donutRemain').innerText = remain.toFixed(2);
+  document.getElementById('donutTotal').innerText = total.toFixed(2);
 }
 
 function refreshUsedLists(){
