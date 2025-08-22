@@ -223,6 +223,10 @@ a {
     <br/>
     <div class="left-item">
       <h4 class="SubTitleText"><div class="SubTitleLogo" ></div>캘린더</h2>
+      <div style="display: flex; justify-content:right; gap:5px; margin: -20px 0 10px 0;">
+        <input style="font-size: 11px;" type="date" id="jumpDate">
+        <button style="font-size: 12px;" id="goBtn">이동</button>
+      </div>
       <div id="calendar" style="padding-bottom:15px;"></div>
     </div>
     <br/>
@@ -478,6 +482,12 @@ document.addEventListener('DOMContentLoaded', ()=>{
     dayMaxEvents:true
   });
   calendar.render();
+  document.getElementById('goBtn').addEventListener('click', () => {
+    const dateInput = document.getElementById('jumpDate').value; // YYYY-MM-DD
+    if(dateInput){
+      calendar.gotoDate(dateInput); // 캘린더 이동
+    }
+  });
 });
 
 // 모달 이벤트
