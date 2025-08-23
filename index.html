@@ -346,6 +346,7 @@ a {
 </div>
     
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
 <script>
 let annIdCounter = 1;
 const annualOccurrences = [];
@@ -451,17 +452,20 @@ document.getElementById('exportData').onclick = () => {
     usedHolidays,
     usedSubHolidays,
     annIdCounter,
-    remainingAnn
   };
   const dataStr = JSON.stringify(dataToSave, null, 2);
-  const blob = new Blob([dataStr], {type: "application/json"});
-  const url = URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url;
-  a.download='vacation_data.json';
-  a.click();
-  URL.revokeObjectURL(url);
+  const blob = new Blob([dataStr], { type: "application/json;charset=utf-8" });
+
+  try {
+    saveAs(blob, "vacation_data.json"); // FileSaver.js 시도
+  } catch (e) {
+    console.warn("FileSaver 다운로드 실패, fallback 실행", e);
+    // iOS 사파리용 대체 방법: 새 탭에 JSON 열기
+    const url = "data:application/json;charset=utf-8," + encodeURIComponent(dataStr);
+    window.open(url, "_blank");
+  }
 };
+
 
 /* ========== 불러오기 기능 (모든 데이터 복원) ========== */
 document.getElementById('importData').onclick = () =>
