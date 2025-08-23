@@ -347,8 +347,7 @@ a {
     
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
-<script>
-let annIdCounter = 1;
+<script>let annIdCounter = 1;
 const annualOccurrences = [];
 const weekendSubHolidays = [];
 const usedHolidays = [];
@@ -357,6 +356,12 @@ const usedSubHolidays = [];
 let currentDate = '';
 let currentWeekday = '';
 
+function getRemainAnnual(){
+  const total = annualOccurrences.reduce((sum,a)=>sum+a.remaining,0);
+  const used  = usedHolidays.reduce((sum,u)=>sum+u.amount,0);
+  return { total, used, remain: total - used };
+}
+
 function refreshLists(){
   const annList=document.getElementById('annList');
   const addedSubList=document.getElementById('addedSubList');
@@ -364,7 +369,7 @@ function refreshLists(){
   annualOccurrences.slice().sort((a,b)=>a.date.localeCompare(b.date)).forEach(item=>{
     const div=document.createElement('div'); div.className='item';
     div.innerHTML = `<div>${item.date} · 남은:${item.remaining}일</div>
-                     <div><button class="small" onclick="deleteAnn(${item.id})">삭제</button></div>`;
+                      <div><button class="small" onclick="deleteAnn(${item.id})">삭제</button></div>`;
     annList.appendChild(div);
   });
 
@@ -372,7 +377,7 @@ function refreshLists(){
   weekendSubHolidays.forEach((item, idx)=>{
     const div=document.createElement('div'); div.className='item';
     div.innerHTML = `<div>${item.date} (${item.weekday})</div>
-                     <div><button class="small" onclick="deleteAddedSub(${idx})">삭제</button></div>`;
+                      <div><button class="small" onclick="deleteAddedSub(${idx})">삭제</button></div>`;
     addedSubList.appendChild(div);
   });
 
@@ -383,8 +388,7 @@ function refreshLists(){
 }
 
 function updateDonutGauge(){
-  const total = annualOccurrences.reduce((sum, a) => sum + a.remaining, 0); // 총 발생 연차
-  const remain = remainingAnn; // 남은 연차
+  const { total, remain } = getRemainAnnual();
   const percent = total > 0 ? (remain / total) * 100 : 0;
 
   // 도넛 애니메이션 (둘레: 2πr = 339.292)
@@ -406,20 +410,26 @@ function refreshUsedLists(){
   usedHolidays.forEach((item, idx)=>{
     const div=document.createElement('div'); div.className='item';
     div.innerHTML=`<div>${item.date} (${item.weekday}) - ${item.amount}일</div>
-                   <div><button class="small" onclick="deleteUsedHoliday(${idx})">삭제</button></div>`;
+                    <div><button class="small" onclick="deleteUsedHoliday(${idx})">삭제</button></div>`;
     usedList.appendChild(div);
   });
   usedSubHolidays.forEach((item, idx)=>{
     const div=document.createElement('div'); div.className='item';
     div.innerHTML=`<div>${item.date} (${item.weekday})</div>
-                   <div><button class="small" onclick="deleteUsedSub(${idx})">삭제</button></div>`;
+                    <div><button class="small" onclick="deleteUsedSub(${idx})">삭제</button></div>`;
     usedSubList.appendChild(div);
   });
 }
 
-function deleteAnn(id){ const idx = annualOccurrences.findIndex(a=>a.id===id); if(idx>=0){ remainingAnn -= annualOccurrences[idx].remaining; annualOccurrences.splice(idx,1); refreshLists(); }}
+function deleteAnn(id){ 
+  const idx = annualOccurrences.findIndex(a=>a.id===id); 
+  if(idx>=0){ 
+    annualOccurrences.splice(idx,1); 
+    refreshLists(); 
+  }
+}
 function deleteAddedSub(idx){ weekendSubHolidays.splice(idx,1); refreshLists(); }
-function deleteUsedHoliday(idx){ remainingAnn += usedHolidays[idx].amount; usedHolidays.splice(idx,1); refreshUsedLists(); refreshLists(); }
+function deleteUsedHoliday(idx){ usedHolidays.splice(idx,1); refreshUsedLists(); refreshLists(); }
 function deleteUsedSub(idx){ usedSubHolidays.splice(idx,1); refreshUsedLists(); refreshLists(); }
 
 document.getElementById('addAnn').onclick = () => {
@@ -428,7 +438,6 @@ document.getElementById('addAnn').onclick = () => {
   if(!date){ alert('날짜 입력'); return; }
   if(days<=0){ alert('0.25 이상'); return; }
   annualOccurrences.push({id: annIdCounter++, date, remaining: days});
-  remainingAnn += days;
   refreshLists();
 };
 
@@ -436,15 +445,13 @@ document.getElementById('addSub').onclick = () => {
   const dateStr = document.getElementById('SubDateADD').value;
   if(!dateStr){ alert('날짜를 선택하세요.'); return; }
 
-  const dateObj = new Date(dateStr);                // 문자열을 Date로 변환
+  const dateObj = new Date(dateStr);
   const weekday = dateObj.toLocaleDateString('ko-KR',{weekday:'short'});
-  const dayNum  = dateObj.getDay();                // 필요시 사용 (0:일요일,6:토요일)
-
   weekendSubHolidays.push({ date: dateStr, weekday });
   refreshLists();
 }
 
-/* ========== 내보내기 기능 (모든 데이터 저장) ========== */
+/* ========== 내보내기 기능 ========== */
 document.getElementById('exportData').onclick = () => {
   const dataToSave = {
     annualOccurrences,
@@ -457,17 +464,15 @@ document.getElementById('exportData').onclick = () => {
   const blob = new Blob([dataStr], { type: "application/json;charset=utf-8" });
 
   try {
-    saveAs(blob, "vacation_data.json"); // FileSaver.js 시도
+    saveAs(blob, "vacation_data.json");
   } catch (e) {
     console.warn("FileSaver 다운로드 실패, fallback 실행", e);
-    // iOS 사파리용 대체 방법: 새 탭에 JSON 열기
     const url = "data:application/json;charset=utf-8," + encodeURIComponent(dataStr);
     window.open(url, "_blank");
   }
 };
 
-
-/* ========== 불러오기 기능 (모든 데이터 복원) ========== */
+/* ========== 불러오기 기능 ========== */
 document.getElementById('importData').onclick = () =>
   document.getElementById('importFile').click();
 
@@ -479,7 +484,6 @@ document.getElementById('importFile').addEventListener('change', e=>{
     try{
       const imported=JSON.parse(event.target.result);
 
-      // 배열들 복원
       annualOccurrences.length = 0;
       imported.annualOccurrences?.forEach(v=>annualOccurrences.push(v));
       weekendSubHolidays.length = 0;
@@ -489,15 +493,11 @@ document.getElementById('importFile').addEventListener('change', e=>{
       usedSubHolidays.length = 0;
       imported.usedSubHolidays?.forEach(v=>usedSubHolidays.push(v));
 
-      // 카운터, 잔여연차 복원
       annIdCounter = imported.annIdCounter ?? 1;
-      remainingAnn = imported.remainingAnn ?? 0;
 
-      // 새로 계산해서 표시
       refreshUsedLists();
       refreshLists();
       alert("불러오기 완료!");
-
     }catch(err){
       alert('파일 읽기 오류: '+err);
     }
@@ -521,11 +521,9 @@ window.onload = function() {
   buttons.forEach(btn => {
     btn.addEventListener('click', function() {
       lists.forEach(list => list.classList.remove('active'));
-
       const targetId = this.id.replace('Btn', 'View');
       const targetDiv = document.getElementById(targetId);
       if(targetDiv) targetDiv.classList.add('active');
-
       buttons.forEach(b => b.classList.remove('active'));
       this.classList.add('active');
     });
@@ -551,38 +549,37 @@ document.addEventListener('DOMContentLoaded', ()=>{
   });
   calendar.render();
   document.getElementById('goBtn').addEventListener('click', () => {
-    const dateInput = document.getElementById('jumpDate').value; // YYYY-MM-DD
+    const dateInput = document.getElementById('jumpDate').value;
     if(dateInput){
-      calendar.gotoDate(dateInput); // 캘린더 이동
+      calendar.gotoDate(dateInput);
     }
   });
 });
 
 // 모달 이벤트
 document.getElementById('modalAnnual').onclick = () => {
-    document.getElementById('holidayModal').style.display = 'none';
-    const annualModal = document.getElementById('holidayModal_Annual');
-    annualModal.style.display = 'flex';
+  document.getElementById('holidayModal').style.display = 'none';
+  const annualModal = document.getElementById('holidayModal_Annual');
+  annualModal.style.display = 'flex';
 
-    const addHoliday = (amount) => {
-      remainingAnn -= amount;
-      usedHolidays.push({date: currentDate, weekday: currentWeekday, amount});
-      refreshUsedLists();
-      refreshLists();
-      annualModal.style.display = 'none';
-    }
+  const addHoliday = (amount) => {
+    usedHolidays.push({date: currentDate, weekday: currentWeekday, amount});
+    refreshUsedLists();
+    refreshLists();
+    annualModal.style.display = 'none';
+  }
 
-    document.getElementById('modalFull').onclick = () => addHoliday(1);
-    document.getElementById('modalHalf').onclick = () => addHoliday(0.5);
-    document.getElementById('modalQuarter').onclick = () => addHoliday(0.25);
-    document.getElementById('modalAnnualCancel').onclick = () => annualModal.style.display = 'none';
+  document.getElementById('modalFull').onclick = () => addHoliday(1);
+  document.getElementById('modalHalf').onclick = () => addHoliday(0.5);
+  document.getElementById('modalQuarter').onclick = () => addHoliday(0.25);
+  document.getElementById('modalAnnualCancel').onclick = () => annualModal.style.display = 'none';
 }
 
 document.getElementById('modalSub').onclick = ()=>{
-    usedSubHolidays.push({date: currentDate, weekday: currentWeekday});
-    refreshUsedLists();
-    refreshLists();
-    document.getElementById('holidayModal').style.display='none';
+  usedSubHolidays.push({date: currentDate, weekday: currentWeekday});
+  refreshUsedLists();
+  refreshLists();
+  document.getElementById('holidayModal').style.display='none';
 };
 
 document.getElementById('modalCancel').onclick = ()=>document.getElementById('holidayModal').style.display='none';
@@ -591,7 +588,6 @@ document.getElementById('modalCancel').onclick = ()=>document.getElementById('ho
 document.querySelectorAll('input[type="date"]').forEach(el => {
   el.value = new Date().toISOString().split('T')[0];
 });
-
 </script>
 </body>
 </html>
