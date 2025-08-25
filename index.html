@@ -43,8 +43,8 @@ button.small { background:#f1f3f6; color:#202124; }
 .DataBtn:hover { transform:translateY(-4px); box-shadow:0 8px 22px rgba(2,6,23,0.08); background:#c4c4c49f; }
 
 .AnnualTypeBtn {width:100%; display:flex; flex-direction:row; gap:5px; justify-content: center }
-#AnnualListBtn, #SubListBtn, #UsedListBtn {padding:8px 14px; font-weight: 500; font-size: 11px; box-shadow:0 4px 12px rgba(2,6,23,0.04); transition: transform .12s ease, box-shadow .12s ease;}
-#AnnualListBtn.active, #SubListBtn.active, #UsedListBtn.active { transform:translateY(-4px); box-shadow:0 8px 22px rgba(2,6,23,0.08); background:#c4c4c49f; }
+#AnnualListBtn, #SubListBtn, #UsedAnnualListBtn, #UsedSubListBtn {padding:8px 14px; font-weight: 500; font-size: 11px; box-shadow:0 4px 12px rgba(2,6,23,0.04); transition: transform .12s ease, box-shadow .12s ease;}
+#AnnualListBtn.active, #SubListBtn.active, #UsedAnnualListBtn.active, #UsedSubListBtn.active { transform:translateY(-4px); box-shadow:0 8px 22px rgba(2,6,23,0.08); background:#c4c4c49f; }
 
 /* ===== 캘린더 ===== */
 #calendar { border-radius:14px; overflow:hidden; }
@@ -141,14 +141,14 @@ h1 { font-size:18px; text-align:left; }
   font-size: 20px;
 }
 
-#AnnualListView, #SubListView, #UsedListView {
+#AnnualListView, #SubListView, #UsedAnnualListView, #UsedSubListView {
   opacity: 0;
   max-height: 0;
   overflow: hidden;
   transition: opacity 0.5s ease, max-height 0.5s ease;
 }
 
-#AnnualListView.active, #SubListView.active, #UsedListView.active {
+#AnnualListView.active, #SubListView.active, #UsedAnnualListView.active, #UsedSubListView.active {
   opacity: 1;
   max-height: 1000px; /* 충분히 큰 값으로 설정 */
 }
@@ -295,7 +295,8 @@ a {
       <div class="AnnualTypeBtn">
         <button id="AnnualListBtn">발생 연차</button>
         <button id="SubListBtn">발생 대휴</button>
-        <button id="UsedListBtn">사용 휴가</button>
+        <button id="UsedAnnualListBtn">사용 연차</button>
+        <button id="UsedSubListBtn">사용 대휴</button>
       </div>
       <br/>
       <div id="AnnualListView" style="width: 100%">
@@ -306,12 +307,14 @@ a {
         <div class="status">추가 대체휴가 리스트</div>
         <div id="addedSubList" class="list"></div>
       </div>
-      <div id="UsedListView" style="width: 100%">
+      <div id="UsedAnnualListView" style="width: 100%">
         <div class="status">사용 휴가 리스트</div>
         <div id="usedList" class="list"></div>
-
+      </div>
+      <div id="UsedSubListView" style="width: 100%">
         <div class="status">사용 대체휴가 리스트</div>
         <div id="usedSubList" class="list"></div>
+      </div>
       </div>
     </div>
   </div>
@@ -511,7 +514,8 @@ window.onload = function() {
   const lists = [
     document.getElementById('AnnualListView'),
     document.getElementById('SubListView'),
-    document.getElementById('UsedListView')
+    document.getElementById('UsedAnnualListView'),
+    document.getElementById('UsedSubListView')
   ];
 
   lists.forEach(list => list.classList.remove('active'));
