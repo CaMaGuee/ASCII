@@ -264,6 +264,11 @@ a {
 }
 
 </style>
+<script>
+  userName = ""
+  userEmail = ""
+  userImage = ""
+</script>
 </head>
 <body>
 <button onclick="loginWithKakao()">카카오 로그인</button>
@@ -665,9 +670,12 @@ document.querySelectorAll('input[type="date"]').forEach(el => {
         Kakao.API.request({
           url: '/v2/user/me',
           success: function(res) {
-            console.log(res.kakao_account.email)
-            console.log(res.properties.nickname)
-            console.log(res.properties.profile_image)
+            userName = res.properties.nickname
+            userEmail = res.kakao_account.email
+            userImage = res.properties.profile_image
+            console.log(userName)
+            console.log(userEmail)
+            console.log(userImage)
           }
         });
       },
