@@ -20,6 +20,8 @@ body {
   color:#111;
 }
 
+.AllContents {display: none;}
+
 .SubTitleText {
   margin:0 0 15px 0;
   display:flex; flex-direction:row; gap:5px;
@@ -264,141 +266,145 @@ a {
 </style>
 </head>
 <body>
-<!-- 상단 네비 -->
-<nav>
-  <div class="titleNav"><h1>휴가 계산기</h1></div>
-</nav>
+<button onclick="loginWithKakao()">카카오 로그인</button>
 
-<div class="notice-bar">
-  <div class="notice-track">
-    <span>2025년 08월 25일 서비스 정식 시작</span>
-  </div>
-</div>
+<div class="AllContents">
+  <!-- 상단 네비 -->
+  <nav>
+    <div class="titleNav"><h1>휴가 계산기</h1></div>
+  </nav>
 
-<!-- 매뉴얼 버튼 -->
-<div id="ManualBtn">
-  <label style="font-weight:600; font-size:12px;">
-    <a href="https://github.com/CaMaGuee/home/blob/eaa910882981738c4152cb40123aa7266c91a898/%ED%9C%B4%EA%B0%80%20%EA%B3%84%EC%82%B0%EA%B8%B0%20%EB%A9%94%EB%89%B4%EC%96%BC.pdf">사용 방법</a>
-  </label>
-</div>
-
-<!-- 메인 패널 -->
-<div class="panel flex">
-  <!-- 왼쪽 -->
-  <div class="left">
-    <div class="left-item">
-      <h4 class="SubTitleText"><div class="SubTitleLogo" ></div>휴가 추가</h2>
-      <div id="left-top-input-field">
-        <div id="AnnualInput">
-          <label style="padding-left:3px;">연차 발생일</label>
-          <input id="annDate" style="text-align: center" type="date">
-          <label style="padding-left:3px;">일수</label>
-          <input id="annDays" style="text-align: center" type="number" min="0.25" step="0.25" value="1">
-          <button id="addAnn" class="primary">추가</button>
-        </div>
-        <div id="SubInput">
-          <label style="padding-left:3px;">대체휴가 수동 입력</label>
-          <input id="SubDateADD" style="text-align: center" type="date">
-          <label class="invisible-block" style="padding-left:3px;">일수</label>
-          <input class="invisible-block" type="number" min="0.25" step="0.25" value="1">
-          <button id="addSub" class="primary">추가</button>
-        </div>
-      </div>
-      <div id="left-top-btn" style="margin-top:16px; display:flex; gap:8px; flex-wrap:wrap;"></div>
-      <div id="left-top-save-load-btn">
-        <button id="exportData" class="DataBtn small">내보내기</button>
-        <input type="file" id="importFile" style="display:none;">
-        <button id="importData" class="DataBtn small">불러오기</button>
-      </div>
+  <div class="notice-bar">
+    <div class="notice-track">
+      <span>2025년 08월 25일 서비스 정식 시작</span>
     </div>
-    <br/>
-    <div class="left-item">
-      <h4 class="SubTitleText"><div class="SubTitleLogo" ></div>캘린더</h2>
-      <div style="display: flex; justify-content:right; gap:5px; margin: -20px 0 10px 0;">
-        <input style="font-size: 11px;" type="date" id="jumpDate">
-        <button style="font-size: 12px;" id="goBtn">이동</button>
-      </div>
-      <div id="calendar" style="padding-bottom:15px;"></div>
-    </div>
-    <br/>
   </div>
 
-  <!-- 오른쪽 -->
-  <div class="right">
-    <div class="right-item">
-      <h4 class="SubTitleText"><div class="SubTitleLogo"></div>남은 기간</h4>
-      <div class="donut">
-        <svg class="donut-ring" width="140" height="140" viewBox="0 0 120 120">
-          <circle class="donut-bg" cx="60" cy="60" r="54"></circle>
-          <circle class="donut-fg" cx="60" cy="60" r="54"></circle>
-        </svg>
-        <div class="donut-label">
-          <span id="donutText">0%</span>
-          <div style="font-size:12px; color:#555;">
-            남은 <span id="donutRemain">0</span> / <span id="donutTotal">0</span>
+  <!-- 매뉴얼 버튼 -->
+  <div id="ManualBtn">
+    <label style="font-weight:600; font-size:12px;">
+      <a href="https://github.com/CaMaGuee/home/blob/eaa910882981738c4152cb40123aa7266c91a898/%ED%9C%B4%EA%B0%80%20%EA%B3%84%EC%82%B0%EA%B8%B0%20%EB%A9%94%EB%89%B4%EC%96%BC.pdf">사용 방법</a>
+    </label>
+  </div>
+
+  <!-- 메인 패널 -->
+  <div class="panel flex">
+    <!-- 왼쪽 -->
+    <div class="left">
+      <div class="left-item">
+        <h4 class="SubTitleText"><div class="SubTitleLogo" ></div>휴가 추가</h2>
+        <div id="left-top-input-field">
+          <div id="AnnualInput">
+            <label style="padding-left:3px;">연차 발생일</label>
+            <input id="annDate" style="text-align: center" type="date">
+            <label style="padding-left:3px;">일수</label>
+            <input id="annDays" style="text-align: center" type="number" min="0.25" step="0.25" value="1">
+            <button id="addAnn" class="primary">추가</button>
+          </div>
+          <div id="SubInput">
+            <label style="padding-left:3px;">대체휴가 수동 입력</label>
+            <input id="SubDateADD" style="text-align: center" type="date">
+            <label class="invisible-block" style="padding-left:3px;">일수</label>
+            <input class="invisible-block" type="number" min="0.25" step="0.25" value="1">
+            <button id="addSub" class="primary">추가</button>
           </div>
         </div>
-      </div>
-      <div style="margin-top:20px; width: 100%; display:flex; flex-direction: column; align-items: center;">
-        <div style="color:#048300; font-weight: 600; font-size: 20px;"><span id="remainingSub">0</span></div>
-        <div class="status" style="margin-top: 0;">대체휴가</div>
-      </div>
-    </div>
-    <br/>
-    <div class="right-item">
-      <h4 class="SubTitleText"><div class="SubTitleLogo" ></div>사용 기간</h2>
-      <div class="AnnualTypeBtn">
-        <button id="AnnualListBtn">발생 연차</button>
-        <button id="SubListBtn">발생 대휴</button>
-        <button id="UsedAnnualListBtn">사용 연차</button>
-        <button id="UsedSubListBtn">사용 대휴</button>
+        <div id="left-top-btn" style="margin-top:16px; display:flex; gap:8px; flex-wrap:wrap;"></div>
+        <div id="left-top-save-load-btn">
+          <button id="exportData" class="DataBtn small">내보내기</button>
+          <input type="file" id="importFile" style="display:none;">
+          <button id="importData" class="DataBtn small">불러오기</button>
+        </div>
       </div>
       <br/>
-      <div id="AnnualListView" style="width: 100%">
-        <div class="status">발생 연차 리스트</div>
-        <div id="annList" class="list"></div>
+      <div class="left-item">
+        <h4 class="SubTitleText"><div class="SubTitleLogo" ></div>캘린더</h2>
+        <div style="display: flex; justify-content:right; gap:5px; margin: -20px 0 10px 0;">
+          <input style="font-size: 11px;" type="date" id="jumpDate">
+          <button style="font-size: 12px;" id="goBtn">이동</button>
+        </div>
+        <div id="calendar" style="padding-bottom:15px;"></div>
       </div>
-      <div id="SubListView" style="width: 100%">
-        <div class="status">추가 대체휴가 리스트</div>
-        <div id="addedSubList" class="list"></div>
+      <br/>
+    </div>
+
+    <!-- 오른쪽 -->
+    <div class="right">
+      <div class="right-item">
+        <h4 class="SubTitleText"><div class="SubTitleLogo"></div>남은 기간</h4>
+        <div class="donut">
+          <svg class="donut-ring" width="140" height="140" viewBox="0 0 120 120">
+            <circle class="donut-bg" cx="60" cy="60" r="54"></circle>
+            <circle class="donut-fg" cx="60" cy="60" r="54"></circle>
+          </svg>
+          <div class="donut-label">
+            <span id="donutText">0%</span>
+            <div style="font-size:12px; color:#555;">
+              남은 <span id="donutRemain">0</span> / <span id="donutTotal">0</span>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:20px; width: 100%; display:flex; flex-direction: column; align-items: center;">
+          <div style="color:#048300; font-weight: 600; font-size: 20px;"><span id="remainingSub">0</span></div>
+          <div class="status" style="margin-top: 0;">대체휴가</div>
+        </div>
       </div>
-      <div id="UsedAnnualListView" style="width: 100%">
-        <div class="status">사용 휴가 리스트</div>
-        <div id="usedList" class="list"></div>
-      </div>
-      <div id="UsedSubListView" style="width: 100%">
-        <div class="status">사용 대체휴가 리스트</div>
-        <div id="usedSubList" class="list"></div>
-      </div>
+      <br/>
+      <div class="right-item">
+        <h4 class="SubTitleText"><div class="SubTitleLogo" ></div>사용 기간</h2>
+        <div class="AnnualTypeBtn">
+          <button id="AnnualListBtn">발생 연차</button>
+          <button id="SubListBtn">발생 대휴</button>
+          <button id="UsedAnnualListBtn">사용 연차</button>
+          <button id="UsedSubListBtn">사용 대휴</button>
+        </div>
+        <br/>
+        <div id="AnnualListView" style="width: 100%">
+          <div class="status">발생 연차 리스트</div>
+          <div id="annList" class="list"></div>
+        </div>
+        <div id="SubListView" style="width: 100%">
+          <div class="status">추가 대체휴가 리스트</div>
+          <div id="addedSubList" class="list"></div>
+        </div>
+        <div id="UsedAnnualListView" style="width: 100%">
+          <div class="status">사용 휴가 리스트</div>
+          <div id="usedList" class="list"></div>
+        </div>
+        <div id="UsedSubListView" style="width: 100%">
+          <div class="status">사용 대체휴가 리스트</div>
+          <div id="usedSubList" class="list"></div>
+        </div>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<!-- 모달: 평일 선택 -->
-<div id="holidayModal">
-  <div>
-    <h4 class="SubTitleText"><div class="SubTitleLogo" ></div>휴가 사용</h2>
-    <br/>
-    <div style="margin-bottom:12px; font-weight:400;">휴가를 추가하시겠습니까?</div>
-    <div style="display:flex; gap:8px; justify-content:center;">
-      <button id="modalAnnual" class="primary">연차</button>
-      <button id="modalSub" class="primary">대체휴가</button>
-      <button id="modalCancel" class="small">취소</button>
+  <!-- 모달: 평일 선택 -->
+  <div id="holidayModal">
+    <div>
+      <h4 class="SubTitleText"><div class="SubTitleLogo" ></div>휴가 사용</h2>
+      <br/>
+      <div style="margin-bottom:12px; font-weight:400;">휴가를 추가하시겠습니까?</div>
+      <div style="display:flex; gap:8px; justify-content:center;">
+        <button id="modalAnnual" class="primary">연차</button>
+        <button id="modalSub" class="primary">대체휴가</button>
+        <button id="modalCancel" class="small">취소</button>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- 모달: 연차 상세 선택 -->
-<div id="holidayModal_Annual">
-  <div>
-    <h4 class="SubTitleText"><div class="SubTitleLogo" ></div>연차 선택</h2>
-    <br/>
-    <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
-      <button id="modalFull" class="primary">휴가(1일)</button>
-      <button id="modalHalf" class="primary">휴가(0.5일)</button>
-      <button id="modalQuarter" class="primary">휴가(0.25일)</button>
-      <button id="modalAnnualCancel" class="small">취소</button>
+  <!-- 모달: 연차 상세 선택 -->
+  <div id="holidayModal_Annual">
+    <div>
+      <h4 class="SubTitleText"><div class="SubTitleLogo" ></div>연차 선택</h2>
+      <br/>
+      <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
+        <button id="modalFull" class="primary">휴가(1일)</button>
+        <button id="modalHalf" class="primary">휴가(0.5일)</button>
+        <button id="modalQuarter" class="primary">휴가(0.25일)</button>
+        <button id="modalAnnualCancel" class="small">취소</button>
+      </div>
     </div>
   </div>
 </div>
@@ -670,8 +676,5 @@ document.querySelectorAll('input[type="date"]').forEach(el => {
     });
   }
 </script>
-
-<button onclick="loginWithKakao()">카카오 로그인</button>
-
 </body>
 </html>
