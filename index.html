@@ -662,16 +662,17 @@ document.querySelectorAll('input[type="date"]').forEach(el => {
   function loginWithKakao() {
     Kakao.Auth.login({
       success: function(authObj) {
-        console.log(authObj); // access_token 포함됨
         Kakao.API.request({
           url: '/v2/user/me',
           success: function(res) {
-            console.log(res); // 사용자 정보
+            console.log(res.kakao_account.email)
+            console.log(res.properties.nickname)
+            console.log(res.properties.profile_image)
           }
         });
       },
       fail: function(err) {
-        console.error(err);
+        window.location.href = "https://camaguee.github.io/home/"; // 원하는 경로로 이동
       }
     });
   }
