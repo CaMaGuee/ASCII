@@ -1,0 +1,21 @@
+{
+    "name": "Annual_Calculation",
+    "short_name": "ACL",
+    "start_url": "./index.html",
+    "display": "standalone",
+    "background_color": "#f0f2f5",
+    "theme_color": "#317EFB",
+    "icons": [
+      {
+        "src": "./favicon.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      },
+      {
+        "src": "./favicon.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ]
+  }
+  
